@@ -1,7 +1,6 @@
 exports.createProduct = (req, res, next) => {
   const name = req.body.name;
   const price = req.body.price;
-
   res.json({
     message: "create broow!!!!",
     data: {
@@ -15,7 +14,7 @@ exports.createProduct = (req, res, next) => {
 
 exports.getAllProducts = (req, res, next) => {
   res.json({
-    message: "create su",
+    message: "test",
     data: {
       id: 1,
       name: "produk",
