@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const BlogPost = require("../models/blog");
 
 exports.createBlogPost = (req, res, next) => {
   const title = req.body.title;
@@ -7,6 +8,7 @@ exports.createBlogPost = (req, res, next) => {
 
   const errors = validationResult(req);
 
+  //validasi ada eror atau tidak
   if (!errors.isEmpty()) {
     const err = new Error("invalid value tidak sesuai");
     err.errorStatus = 400;
@@ -14,19 +16,23 @@ exports.createBlogPost = (req, res, next) => {
     throw err;
   }
 
-  const result = {
-    message: "Create Blog Post Success",
-    data: {
-      post_id: 1,
-      title: "Title Blog",
-      image: "imagefile.png",
-      body: "lorem ipsum is simple dummy text of the printing",
-      created: "17/06/2024",
-      author: {
-        uid: 1,
-        name: "Testing",
-      },
+  const Posting = new BlogPost({
+    title: title,
+    body: body,
+    author: {
+      uid: 1,
+      nama: "noer",
     },
-  };
-  res.status(201).json(result);
+  });
+
+  Posting.save()
+    .then((result) => {
+      res.status(201).json({
+        message: "Create Blog Post Success",
+        data: result,
+      });
+    })
+    .catch((err) => {
+      console.log("err: ", err);
+    });
 };

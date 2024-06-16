@@ -17,7 +17,7 @@ const BlogPost = new Schema(
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // menambahkan otomatis secara default createdAt / updateAt
   }
 );
 
