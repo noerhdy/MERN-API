@@ -29,9 +29,9 @@ GROUP: Authentication
 
 req:
 {
-    "name" : "Testing",
-    "email" : "test@email.com",
-    "password" : "123123"
+    "name"      : "Testing",
+    "email"     : "test@email.com",
+    "password"  : "123123"
 }
 
 res:
@@ -46,7 +46,6 @@ res:
 }
 
 err-response:
-example:
 201 -> Register Berhasil
 400 -> input yang anda masukan tidak valid
 
@@ -55,13 +54,60 @@ example:
 
 req:
 {
-    "name" : "Testing",
-    "email" : "test@email.com",
-    "password" : "123123"
+    "name"      : "Testing",
+    "email"     : "test@email.com",
+    "password"  : "123123"
+}
+
+res:
+{
+    "message" : "Register Success",
+    "data" : {
+        "id" : 1,
+        "name" : :Testing,
+        "email" : "test@email.com",
+        "password" : "123123"
+    }
 }
 
 
 GROUP: blog
+
+[1] - Blog 
+[POST] : {root.api}/{version}/blog/
+
+
+req:
+{
+    "post_id"   : 1,
+    "title"     : "Title Blog",
+    "image"     : "imagefile.png",
+    "body"      : "lorem ipsum is simple dummy text of the printing",
+}
+
+res:
+{
+    "message" : "Create Blog Post Success",
+    "data" : {
+        "post_id" : 1,
+        "title" : "Title Blog",
+        "image" : "imagefile.png",
+        "body" : "lorem ipsum is simple dummy text of the printing",
+        "created" : "17/06/2024",
+        "author" : {
+            "uid" : 1,
+            "name" : "Testing"
+        }
+    }
+}
+
+err-response:
+201 -> Blog Post Berhasil dibuat
+400 -> input yang anda masukan tidak valid
+
+
+
+
 
 [1] -   Create Blog Post   ->   [POST]
 [2] -   Get Blog Post      ->   [READ]
