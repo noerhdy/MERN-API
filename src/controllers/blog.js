@@ -2,22 +2,29 @@ const { validationResult } = require("express-validator");
 const BlogPost = require("../models/blog");
 
 exports.createBlogPost = (req, res, next) => {
-  const title = req.body.title;
-  // const image = req.body.image;
-  const body = req.body.body; // .body yg dibelakang adalah body untuk contentnya
-
+  // Cek validasi ada eror atau tidak
   const errors = validationResult(req);
 
-  //validasi ada eror atau tidak
   if (!errors.isEmpty()) {
-    const err = new Error("invalid value tidak sesuai");
+    const err = new Error("Invalid value, input tidak sesuai"); // Input teks validasi < 5
     err.errorStatus = 400;
     err.data = errors.array();
-    throw err;
+    return next(err); // Gunakan next untuk mengoper error ke middleware error handler
   }
+
+  if (!req.file) {
+    const err = new Error("Image harus di-upload"); // Input pengecekan validasi image/file
+    err.errorStatus = 422;
+    return next(err); // Gunakan next untuk mengoper error ke middleware error handler
+  }
+
+  const title = req.body.title;
+  const image = req.file.path; // Image/file tidak perlu req body karena sudah diproses oleh multer jadi cukup menerima path-nya saja
+  const body = req.body.body; // .body yang dibelakang adalah body untuk kontennya
 
   const Posting = new BlogPost({
     title: title,
+    image: image,
     body: body,
     author: {
       uid: 1,
@@ -33,6 +40,7 @@ exports.createBlogPost = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log("err: ", err);
+      // Gunakan next untuk mengoper error ke middleware error handler
+      next(err);
     });
 };
