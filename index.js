@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
 
 const app = express();
 // const productRoutes = require("./src/routes/product"); dummy (tidak dipakai)
@@ -30,4 +31,11 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
-app.listen(4000);
+mongoose
+  .connect(
+    "mongodb+srv://hidayatnoer111:FMMMb4AW2S3sIy4P@cluster0.yksfuoq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+  )
+  .then(() => {
+    app.listen(4000, () => console.log("connection success"));
+  })
+  .catch((err) => console.log(err));
