@@ -1,6 +1,7 @@
 const { validationResult } = require("express-validator");
 const BlogPost = require("../models/blog");
 
+//! [POST]
 exports.createBlogPost = (req, res, next) => {
   // Cek validasi ada eror atau tidak
   const errors = validationResult(req);
@@ -41,6 +42,20 @@ exports.createBlogPost = (req, res, next) => {
     })
     .catch((err) => {
       // Gunakan next untuk mengoper error ke middleware error handler
+      next(err);
+    });
+};
+
+//! [GET]
+exports.getAllBlogPost = (req, res, next) => {
+  BlogPost.find()
+    .then((result) => {
+      res.status(200).json({
+        message: "Data blog post berhasil dipanggil",
+        data: result,
+      });
+    })
+    .catch((err) => {
       next(err);
     });
 };

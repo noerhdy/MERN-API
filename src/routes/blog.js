@@ -5,7 +5,7 @@ const router = express.Router();
 
 const blogController = require("../controllers/blog");
 
-//* [POST] : /v1/blog/post
+//! [POST] : /v1/blog/post
 router.post(
   "/post",
   [
@@ -14,5 +14,9 @@ router.post(
   ],
   blogController.createBlogPost
 );
+
+//! [GET] : /v1/blog/posts
+
+router.get("/posts", blogController.getAllBlogPost);
 
 module.exports = router;
