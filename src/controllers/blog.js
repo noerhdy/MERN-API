@@ -1,4 +1,6 @@
 const { validationResult } = require("express-validator");
+const path = require("path");
+const fs = require("fs"); // file system
 const BlogPost = require("../models/blog");
 
 //! [POST]
@@ -60,7 +62,7 @@ exports.getAllBlogPost = (req, res, next) => {
     });
 };
 
-//! GET ID BLOG POST
+//! [GET] ID BLOG POST
 exports.getBlogPostById = (req, res, next) => {
   const postId = req.params.postId;
 
@@ -81,7 +83,7 @@ exports.getBlogPostById = (req, res, next) => {
     });
 };
 
-//! PUT ID BLOG POST
+//! [PUT] ID BLOG POST
 exports.updateBlogPost = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -125,4 +127,47 @@ exports.updateBlogPost = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+//! [DELETE] ID BLOG POST
+exports.deleteBlogPost = (req, res, next) => {
+  const postId = req.params.postId;
+
+  //cek ID
+  BlogPost.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const err = new Error("Blog Post tidak ditemukan"); // mengecek blog post ada / tidak
+        err.errorStatus = 400;
+        throw next(err); // Gunakan next untuk mengoper error ke middleware error handler
+      }
+      //me remove image dan BLOGPOST
+      removeImage(post.image);
+      return BlogPost.findByIdAndDelete(postId);
+    })
+    .then((result) => {
+      res.status(200).json({
+        message: "Delete Berhasil",
+        data: result,
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+//? FUNCTION MENGHAPUS IMAGE
+
+const removeImage = (filePath) => {
+  console.log("filePath", filePath);
+  console.log("dir name", __dirname); // agar mengetahui dimana direktori dari image yg akan dihapus
+
+  // DIRNAME yg didapat = dir name C:\Users\LENOVO\Desktop\MERN-API\src\controllers
+  // FILEPATH yg didapat = filePath images\2024-06-17T17-23-34.008Z-68cf3e07f271d80122ac3f2bfaa8c7c5.jpg
+
+  // menggambungkan FILEPAH & DIRNAME
+  // jadi seperti ini = C:\Users\LENOVO\Desktop\MERN-API/2024-06-17T17-23-34.008Z-68cf3e07f271d80122ac3f2bfaa8c7c5.jpg
+  filePath = path.join(__dirname, "../..", filePath);
+  //cara meremove di node.js memakai file system (fs)
+  fs.unlink(filePath, (err) => console.log(err));
 };
